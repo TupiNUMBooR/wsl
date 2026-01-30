@@ -23,16 +23,26 @@ cp files/gallery-dl.conf ~/.config/gallery-dl/config.json
 
 sync_newer files/cache.sqlite3 ~/.cache/gallery-dl/cache.sqlite3
 
+# u=$USER
+u=k
+if [[ ! -e ~/.gitconfig && -f "/mnt/c/Users/$u/.gitconfig" ]]; then
+  ln -s "/mnt/c/Users/$u/.gitconfig" ~/.gitconfig
+fi
+
+git config --global init.defaultBranch dev
+git config --global push.autoSetupRemote true
+git config --global core.autocrlf input
+
 pacman -Suy --noconfirm \
-  bash-completion zip unzip p7zip ncdu \
+  bash-completion zip unzip p7zip ncdu less \
   python python-pip python-pipx \
   exiv2 imagemagick libheif ffmpeg opus-tools yt-dlp id3v2 \
-  netcat tmux jq xmlstarlet perl-rename cloc
+  netcat tmux jq xmlstarlet perl-rename cloc git
 
 # pacman -S --noconfirm \
   # nodejs npm jdk-openjdk maven \
   # man-pages mandoc cmus htop btop \
-  # vim git yq
+  # vim yq
 
 pipx install gallery-dl
 pipx ensurepath
