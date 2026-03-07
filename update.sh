@@ -16,6 +16,32 @@ sync_newer() {
   [[ $a -nt $b ]] && cp -f "$a" "$b" || cp -f "$b" "$a"
 }
 
+. .env
+
+packages=(
+  # terminal basics
+  bash-completion less man-pages mandoc
+
+  # archives
+  zip unzip p7zip rsync
+
+  # tui tools
+  tmux ncdu htop btop cmus fastfetch
+
+  # networking / dev
+  openssh netcat perl-rename git
+
+  # runtimes
+  # jdk-openjdk maven
+  python python-pip python-pipx nodejs npm
+
+  # data processing
+  jq xmlstarlet cloc
+
+  # media
+  exiv2 imagemagick libheif ffmpeg opus-tools yt-dlp id3v2
+)
+
 cp files/.bashrc ~/.bashrc
 cp files/.profile ~/.bash_profile
 mkdir -p ~/.{config,cache}/gallery-dl
@@ -23,8 +49,7 @@ cp files/gallery-dl.conf ~/.config/gallery-dl/config.json
 
 sync_newer files/cache.sqlite3 ~/.cache/gallery-dl/cache.sqlite3
 
-# u=$USER
-u=k
+u=${USER?}
 if [[ ! -e ~/.gitconfig && -f "/mnt/c/Users/$u/.gitconfig" ]]; then
   ln -s "/mnt/c/Users/$u/.gitconfig" ~/.gitconfig
 fi
@@ -33,16 +58,9 @@ git config --global init.defaultBranch dev
 git config --global push.autoSetupRemote true
 git config --global core.autocrlf input
 
-pacman -Suy --noconfirm \
-  bash-completion zip unzip p7zip ncdu less \
-  python python-pip python-pipx \
-  exiv2 imagemagick libheif ffmpeg opus-tools yt-dlp id3v2 \
-  netcat tmux jq xmlstarlet perl-rename cloc git
-
-# pacman -S --noconfirm \
-  # nodejs npm jdk-openjdk maven \
-  # man-pages mandoc cmus htop btop \
-  # vim yq
+pacman -Sy --needed --ask=4 archlinux-keyring
+pacman -Su --ask=4
+pacman -Su --needed --ask=4 "${packages[@]}"
 
 pipx install gallery-dl
 pipx ensurepath
