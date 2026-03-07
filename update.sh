@@ -18,30 +18,6 @@ sync_newer() {
 
 . .env
 
-packages=(
-  # terminal basics
-  bash-completion less man-pages mandoc
-
-  # archives
-  zip unzip p7zip rsync
-
-  # tui tools
-  tmux ncdu htop btop cmus fastfetch
-
-  # networking / dev
-  openssh netcat perl-rename git
-
-  # runtimes
-  # jdk-openjdk maven
-  python python-pip python-pipx nodejs npm
-
-  # data processing
-  jq xmlstarlet cloc
-
-  # media
-  exiv2 imagemagick libheif ffmpeg opus-tools yt-dlp id3v2
-)
-
 cp files/.bashrc ~/.bashrc
 cp files/.profile ~/.bash_profile
 mkdir -p ~/.{config,cache}/gallery-dl
@@ -60,7 +36,7 @@ git config --global core.autocrlf input
 
 pacman -Sy --needed --ask=4 archlinux-keyring
 pacman -Su --ask=4
-pacman -Su --needed --ask=4 "${packages[@]}"
+pacman -S --needed --ask=4 - < packages.txt
 
 pipx install gallery-dl
 pipx ensurepath
